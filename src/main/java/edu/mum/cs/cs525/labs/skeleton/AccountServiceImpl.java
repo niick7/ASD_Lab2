@@ -11,6 +11,7 @@ public class AccountServiceImpl implements AccountService {
 
 	public Account createAccount(String accountNumber, String customerName) {
 		Account account = new Account(accountNumber);
+		performAccountChanged(account, new EmailSender());
 		Customer customer = new Customer(customerName);
 		account.setCustomer(customer);
 		
@@ -21,6 +22,7 @@ public class AccountServiceImpl implements AccountService {
 
 	public void deposit(String accountNumber, double amount) {
 		Account account = accountDAO.loadAccount(accountNumber);
+		performAccountChanged(account, new SMSSender());
 		account.deposit(amount);
 		
 		accountDAO.updateAccount(account);
@@ -37,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
 
 	public void withdraw(String accountNumber, double amount) {
 		Account account = accountDAO.loadAccount(accountNumber);
+		performAccountChanged(account, new SMSSender());
 		account.withdraw(amount);
 		accountDAO.updateAccount(account);
 	}
@@ -45,9 +48,15 @@ public class AccountServiceImpl implements AccountService {
 
 	public void transferFunds(String fromAccountNumber, String toAccountNumber, double amount, String description) {
 		Account fromAccount = accountDAO.loadAccount(fromAccountNumber);
+		performAccountChanged(fromAccount, new SMSSender());
 		Account toAccount = accountDAO.loadAccount(toAccountNumber);
+		performAccountChanged(toAccount, new SMSSender());
 		fromAccount.transferFunds(toAccount, amount, description);
 		accountDAO.updateAccount(fromAccount);
 		accountDAO.updateAccount(toAccount);
+	}
+
+	public void performAccountChanged(Account acc, Logger logger) {
+		acc.addLogger(logger);
 	}
 }

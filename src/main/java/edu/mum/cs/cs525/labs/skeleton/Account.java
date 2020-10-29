@@ -12,7 +12,7 @@ public class Account {
 
 	private List<AccountEntry> entryList = new ArrayList<AccountEntry>();
 
-	private ArrayList<Logger> loggers;
+	private ArrayList<Logger> loggers = new ArrayList<>();
 
 	public Account(String accountNumber) {
 		this.accountNumber = accountNumber;
