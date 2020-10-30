@@ -5,17 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Account {
+public class Account implements Subject {
 	private Customer customer;
 
 	private String accountNumber;
 
 	private List<AccountEntry> entryList = new ArrayList<AccountEntry>();
 
-	private ArrayList<Logger> loggers = new ArrayList<>();
+	private ArrayList<Observer> observers;
 
 	public Account(String accountNumber) {
+		this.observers = new ArrayList<>();
 		this.accountNumber = accountNumber;
+		notifyObservers();
 	}
 
 	public String getAccountNumber() {
@@ -37,11 +39,13 @@ public class Account {
 	public void deposit(double amount) {
 		AccountEntry entry = new AccountEntry(amount, "deposit", "", "");
 		entryList.add(entry);
+		notifyObservers();
 	}
 
 	public void withdraw(double amount) {
 		AccountEntry entry = new AccountEntry(-amount, "withdraw", "", "");
 		entryList.add(entry);
+		notifyObservers();
 	}
 
 	private void addEntry(AccountEntry entry) {
@@ -57,6 +61,7 @@ public class Account {
 		entryList.add(fromEntry);
 		
 		toAccount.addEntry(toEntry);
+		notifyObservers();
 	}
 
 	public Customer getCustomer() {
@@ -71,11 +76,23 @@ public class Account {
 		return entryList;
 	}
 
-	public ArrayList<Logger> getLoggers() {
-		return loggers;
+	@Override
+	public void registerObserver(Observer o) {
+		observers.add(o);
 	}
 
-	public void addLogger(Logger logger) {
-		this.loggers.add(logger);
+	@Override
+	public void removeObserver(Observer o) {
+		int i = observers.indexOf(o);
+		if(i >= 0) {
+			observers.remove(o);
+		}
+	}
+
+	@Override
+	public void notifyObservers() {
+		for(Observer o : observers) {
+			o.inform();
+		}
 	}
 }

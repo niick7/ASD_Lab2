@@ -5,8 +5,15 @@ public class Application {
 		AccountService accountService = new AccountServiceImpl();
 
 		// create 2 accounts;
-		accountService.createAccount("1263862", "Frank Brown");
-		accountService.createAccount("4253892", "John Doe");
+		Subject acc1 = accountService.createAccount("1263862", "Frank Brown");
+		new Logger(acc1);
+		new EmailSender(acc1);
+		new SMSSender(acc1);
+		Subject acc2 = accountService.createAccount("4253892", "John Doe");
+		new Logger(acc2);
+		new EmailSender(acc2);
+		new SMSSender(acc2);
+
 		// use account 1;
 		accountService.deposit("1263862", 240);
 		accountService.deposit("1263862", 529);

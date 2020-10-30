@@ -1,7 +1,16 @@
 package edu.mum.cs.cs525.labs.skeleton;
 
-public class Logger {
-  public Logger() {
-    System.out.println("Logger...");
+import sun.rmi.runtime.Log;
+
+public class Logger implements Observer {
+  private Subject account;
+  public Logger(Subject account) {
+    this.account = account;
+    account.registerObserver(this);
+  }
+
+  @Override
+  public void inform() {
+    System.out.println("Logger: account was updated successfully!");
   }
 }
